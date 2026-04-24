@@ -1,0 +1,342 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --blue:#378ADD;--blue-light:#E6F1FB;--blue-dark:#0C447C;
+  --green:#639922;--green-light:#EAF3DE;--green-dark:#27500A;
+  --amber:#BA7517;--amber-light:#FAEEDA;--amber-dark:#633806;
+  --red:#E24B4A;--red-light:#FCEBEB;--red-dark:#791F1F;
+  --purple:#534AB7;--purple-light:#EEEDFE;--purple-dark:#26215C;
+  --teal:#1D9E75;--teal-light:#E1F5EE;--teal-dark:#085041;
+}
+body{font-family:var(--font-sans,'Inter',sans-serif)}
+
+#cbt-app{padding:10px 0}
+
+.header-bar{
+  display:flex;justify-content:space-between;align-items:center;
+  background:linear-gradient(135deg,#534AB7 0%,#378ADD 100%);
+  border-radius:14px;padding:14px 20px;margin-bottom:14px;
+}
+.header-bar h2{font-size:15px;font-weight:500;color:#fff;letter-spacing:.3px}
+.header-bar .subtitle{font-size:11px;color:rgba(255,255,255,.7);margin-top:2px}
+.timer-box{
+  background:rgba(255,255,255,.18);border:1.5px solid rgba(255,255,255,.35);
+  border-radius:10px;padding:8px 16px;text-align:center;min-width:90px;
+}
+.timer-box .timer-val{font-size:22px;font-weight:500;color:#fff;letter-spacing:3px;font-family:var(--font-mono,'monospace')}
+.timer-box .timer-lbl{font-size:10px;color:rgba(255,255,255,.7);margin-top:1px}
+.timer-box.danger{background:rgba(226,75,74,.3);border-color:rgba(226,75,74,.8)}
+
+.layout{display:grid;grid-template-columns:1fr 210px;gap:12px}
+
+.q-card{
+  background:var(--color-background-primary);
+  border:1px solid var(--color-border-tertiary);
+  border-radius:14px;padding:20px;
+}
+.q-meta{display:flex;align-items:center;gap:8px;margin-bottom:14px}
+.q-badge{
+  background:var(--purple-light);color:var(--purple-dark);
+  font-size:11px;font-weight:500;padding:4px 10px;border-radius:20px;
+}
+.q-progress-text{font-size:12px;color:var(--color-text-secondary)}
+.q-text{font-size:15px;color:var(--color-text-primary);line-height:1.7;margin-bottom:18px;font-weight:500}
+
+.options{display:flex;flex-direction:column;gap:9px;margin-bottom:20px}
+.opt{
+  display:flex;align-items:center;gap:12px;
+  padding:12px 16px;
+  border:1.5px solid var(--color-border-tertiary);
+  border-radius:10px;cursor:pointer;
+  background:var(--color-background-primary);
+  transition:border-color .15s,background .15s;
+}
+.opt:hover{border-color:var(--blue);background:var(--blue-light)}
+.opt.selected{border-color:var(--blue);background:var(--blue-light)}
+.opt-letter{
+  width:30px;height:30px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;font-weight:500;flex-shrink:0;
+  border:1.5px solid currentColor;transition:all .15s;
+}
+.opt.selected .opt-letter{background:var(--blue);color:#fff;border-color:var(--blue)}
+.opt-text{font-size:14px;color:var(--color-text-primary)}
+
+.q-nav{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.btn{
+  padding:9px 18px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;
+  border:1.5px solid var(--color-border-secondary);
+  background:var(--color-background-primary);color:var(--color-text-primary);
+  transition:all .15s;
+}
+.btn:hover{background:var(--color-background-secondary)}
+.btn-blue{background:var(--blue);color:#fff;border-color:var(--blue)}
+.btn-blue:hover{background:var(--blue-dark);border-color:var(--blue-dark)}
+.btn-red{background:var(--red);color:#fff;border-color:var(--red)}
+.btn-red:hover{background:var(--red-dark);border-color:var(--red-dark)}
+
+.sidebar{display:flex;flex-direction:column;gap:10px}
+
+.side-card{
+  background:var(--color-background-primary);
+  border:1px solid var(--color-border-tertiary);
+  border-radius:14px;padding:14px;
+}
+.side-title{font-size:12px;font-weight:500;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px}
+
+.nav-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:5px}
+.nav-btn{
+  aspect-ratio:1;border-radius:7px;font-size:11px;font-weight:500;
+  cursor:pointer;border:none;display:flex;align-items:center;justify-content:center;
+  transition:all .15s;
+}
+.nav-btn.unanswered{background:var(--amber-light);color:var(--amber-dark)}
+.nav-btn.answered{background:var(--green-light);color:var(--green-dark)}
+.nav-btn.current{outline:2.5px solid var(--blue);outline-offset:1px}
+
+.legend{display:flex;flex-direction:column;gap:5px;margin-top:10px;padding-top:10px;border-top:0.5px solid var(--color-border-tertiary)}
+.legend-row{display:flex;align-items:center;gap:7px;font-size:11px;color:var(--color-text-secondary)}
+.legend-dot{width:12px;height:12px;border-radius:4px;flex-shrink:0}
+
+.prog-wrap{margin-top:6px}
+.prog-label{display:flex;justify-content:space-between;font-size:11px;color:var(--color-text-secondary);margin-bottom:5px}
+.prog-bar-bg{height:7px;border-radius:100px;background:var(--color-background-secondary);overflow:hidden}
+.prog-bar-fill{height:100%;border-radius:100px;background:var(--green);transition:width .4s}
+
+.stat-row{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.stat-box{background:var(--color-background-secondary);border-radius:8px;padding:9px;text-align:center}
+.stat-val{font-size:18px;font-weight:500}
+.stat-lbl{font-size:10px;color:var(--color-text-secondary);margin-top:1px}
+
+/* Result screen */
+#result-screen{display:none;padding:10px 0}
+.result-header{
+  background:linear-gradient(135deg,#1D9E75 0%,#378ADD 100%);
+  border-radius:14px;padding:20px;text-align:center;margin-bottom:14px;
+}
+.result-header .rh-title{font-size:16px;font-weight:500;color:#fff;margin-bottom:4px}
+.result-header .rh-sub{font-size:12px;color:rgba(255,255,255,.75)}
+.score-ring{
+  width:90px;height:90px;border-radius:50%;
+  border:5px solid rgba(255,255,255,.4);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  margin:14px auto 0;background:rgba(255,255,255,.15);
+}
+.score-ring .sr-num{font-size:28px;font-weight:500;color:#fff}
+.score-ring .sr-lbl{font-size:10px;color:rgba(255,255,255,.75)}
+
+.res-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px}
+.res-stat{background:var(--color-background-primary);border:1px solid var(--color-border-tertiary);border-radius:12px;padding:12px;text-align:center}
+.res-stat .rv{font-size:24px;font-weight:500}
+.res-stat .rl{font-size:11px;color:var(--color-text-secondary);margin-top:2px}
+
+.review-section{background:var(--color-background-primary);border:1px solid var(--color-border-tertiary);border-radius:14px;padding:16px}
+.review-section h3{font-size:14px;font-weight:500;color:var(--color-text-primary);margin-bottom:12px}
+.review-item{border-radius:10px;padding:12px 14px;margin-bottom:9px;border-left:4px solid transparent}
+.review-item.correct{background:var(--green-light);border-color:var(--green)}
+.review-item.wrong{background:var(--red-light);border-color:var(--red)}
+.review-item.skip{background:var(--color-background-secondary);border-color:var(--color-border-secondary)}
+.ri-q{font-size:13px;font-weight:500;color:var(--color-text-primary);margin-bottom:6px}
+.ri-ans{font-size:12px;margin-bottom:3px}
+.ri-correct-ans{color:var(--green-dark)}
+.ri-wrong-ans{color:var(--red-dark)}
+.ri-skip-ans{color:var(--color-text-secondary)}
+.ri-pembahasan{font-size:12px;color:var(--color-text-secondary);background:rgba(255,255,255,.6);padding:7px 10px;border-radius:7px;margin-top:7px;line-height:1.5}
+</style>
+
+<div id="cbt-app">
+  <div class="header-bar">
+    <div>
+      <div class="header-bar h2" style="font-size:15px;font-weight:500;color:#fff">Tryout Geografi</div>
+      <div class="subtitle">Ujian Online — 10 Soal Pilihan Ganda</div>
+    </div>
+    <div class="timer-box" id="timer-box">
+      <div class="timer-val" id="timer">60:00</div>
+      <div class="timer-lbl">Sisa waktu</div>
+    </div>
+  </div>
+
+  <div class="layout">
+    <div class="q-card">
+      <div class="q-meta">
+        <span class="q-badge" id="q-badge">Soal 1</span>
+        <span class="q-progress-text" id="q-progress">dari 10 soal</span>
+      </div>
+      <div class="q-text" id="q-text"></div>
+      <div class="options" id="options"></div>
+      <div class="q-nav">
+        <button class="btn" onclick="prevQ()">&#8592; Sebelumnya</button>
+        <button class="btn btn-red" onclick="submitTest()">Selesai &amp; Kirim</button>
+        <button class="btn btn-blue" onclick="nextQ()">Selanjutnya &#8594;</button>
+      </div>
+    </div>
+
+    <div class="sidebar">
+      <div class="side-card">
+        <div class="side-title">Navigasi Soal</div>
+        <div class="nav-grid" id="nav-grid"></div>
+        <div class="legend">
+          <div class="legend-row"><div class="legend-dot" style="background:var(--green-light);border:1px solid var(--green)"></div>Sudah dijawab</div>
+          <div class="legend-row"><div class="legend-dot" style="background:var(--amber-light);border:1px solid var(--amber)"></div>Belum dijawab</div>
+        </div>
+      </div>
+      <div class="side-card">
+        <div class="side-title">Progress</div>
+        <div class="prog-wrap">
+          <div class="prog-label"><span id="prog-text">0 terjawab</span><span id="prog-pct">0%</span></div>
+          <div class="prog-bar-bg"><div class="prog-bar-fill" id="prog-bar" style="width:0%"></div></div>
+        </div>
+        <div class="stat-row" style="margin-top:10px">
+          <div class="stat-box"><div class="stat-val" style="color:var(--green)" id="stat-ans">0</div><div class="stat-lbl">Dijawab</div></div>
+          <div class="stat-box"><div class="stat-val" style="color:var(--amber)" id="stat-skip">10</div><div class="stat-lbl">Belum</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="result-screen">
+  <div class="result-header">
+    <div class="rh-title">Hasil Tryout Geografi</div>
+    <div class="rh-sub">Ujian selesai — lihat hasil dan pembahasan di bawah</div>
+    <div class="score-ring">
+      <div class="sr-num" id="res-score">0</div>
+      <div class="sr-lbl">NILAI</div>
+    </div>
+  </div>
+  <div class="res-stats">
+    <div class="res-stat"><div class="rv" style="color:var(--green)" id="res-benar">0</div><div class="rl">Benar</div></div>
+    <div class="res-stat"><div class="rv" style="color:var(--red)" id="res-salah">0</div><div class="rl">Salah</div></div>
+    <div class="res-stat"><div class="rv" style="color:var(--color-text-secondary)" id="res-skip">0</div><div class="rl">Tidak dijawab</div></div>
+  </div>
+  <div class="review-section">
+    <h3>Pembahasan Per Soal</h3>
+    <div id="review-list"></div>
+    <div style="text-align:center;margin-top:14px">
+      <button class="btn btn-blue" onclick="resetTest()">Ulangi Tryout</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const questions=[
+  {text:"Di bawah ini adalah syarat-syarat peta. Kecuali...",options:["Legenda","Simbol","Keterangan","Inset"],answer:2,pembahasan:"'Keterangan' bukan syarat peta yang baku. Syarat peta yang benar meliputi: judul, skala, legenda, simbol, orientasi, sumber, dan inset."},
+  {text:"Proyeksi peta yang cocok digunakan untuk menggambarkan daerah kutub adalah...",options:["Silindris","Kerucut","Azimuthal","Mercator"],answer:2,pembahasan:"Proyeksi Azimuthal paling cocok untuk daerah kutub karena titik pusat proyeksi diletakkan di kutub sehingga distorsi minimal."},
+  {text:"Skala 1:100.000 berarti 1 cm di peta mewakili berapa km di lapangan?",options:["1 km","10 km","100 km","0,1 km"],answer:0,pembahasan:"1:100.000 berarti 1 cm = 100.000 cm = 1.000 m = 1 km di lapangan."},
+  {text:"Garis yang menghubungkan tempat-tempat yang memiliki tekanan udara yang sama disebut...",options:["Isohyet","Isotherm","Isobar","Isohips"],answer:2,pembahasan:"Isobar adalah garis khayal yang menghubungkan tempat-tempat dengan tekanan udara sama. Isohyet = curah hujan, Isotherm = suhu, Isohips = ketinggian."},
+  {text:"Fenomena alam yang termasuk dalam aspek fisik geografi adalah...",options:["Mobilitas penduduk","Persebaran permukiman","Erosi tanah","Kepadatan penduduk"],answer:2,pembahasan:"Erosi tanah merupakan aspek fisik karena berkaitan dengan proses alam. Pilihan lain termasuk aspek sosial/manusia."},
+  {text:"Lapisan atmosfer yang berfungsi melindungi bumi dari sinar ultraviolet adalah...",options:["Troposfer","Stratosfer","Mesosfer","Termosfer"],answer:1,pembahasan:"Stratosfer mengandung lapisan ozon yang menyerap dan melindungi bumi dari radiasi ultraviolet berbahaya."},
+  {text:"Proses pengendapan material hasil erosi disebut...",options:["Abrasi","Sedimentasi","Deflasi","Korasi"],answer:1,pembahasan:"Sedimentasi adalah proses pengendapan material hasil erosi oleh tenaga air, angin, atau gletser."},
+  {text:"Jenis tanah yang terbentuk dari pelapukan batuan granit adalah...",options:["Tanah alluvial","Tanah vulkanik","Tanah laterit","Tanah gambut"],answer:2,pembahasan:"Tanah laterit terbentuk dari pelapukan batuan granit di daerah tropis dengan curah hujan tinggi, menghasilkan tanah merah miskin hara."},
+  {text:"Sumber air tanah yang keluar secara alami ke permukaan disebut...",options:["Artesis","Mata air","Danau","Sungai"],answer:1,pembahasan:"Mata air (spring) adalah air tanah yang keluar secara alami ke permukaan. Artesis adalah sumur yang air tanahnya memancar karena tekanan hidrostatis."},
+  {text:"Hutan yang terdapat di daerah khatulistiwa dengan curah hujan tinggi disebut...",options:["Hutan sabana","Hutan gugur","Hutan hujan tropis","Hutan bakau"],answer:2,pembahasan:"Hutan hujan tropis terdapat di sekitar khatulistiwa dengan curah hujan 2.000–4.000 mm/tahun dan suhu tinggi sepanjang tahun."}
+];
+
+let cur=0,answers=new Array(questions.length).fill(null),timeLeft=60*60,timer=null;
+
+function pad(n){return String(n).padStart(2,'0')}
+function startTimer(){
+  timer=setInterval(()=>{
+    timeLeft--;
+    const m=Math.floor(timeLeft/60),s=timeLeft%60;
+    document.getElementById('timer').textContent=pad(m)+':'+pad(s);
+    if(timeLeft<=300)document.getElementById('timer-box').classList.add('danger');
+    if(timeLeft<=0){clearInterval(timer);submitTest();}
+  },1000);
+}
+
+function render(){
+  const q=questions[cur];
+  document.getElementById('q-badge').textContent='Soal '+(cur+1);
+  document.getElementById('q-progress').textContent='dari '+questions.length+' soal';
+  document.getElementById('q-text').textContent=q.text;
+  const opts=document.getElementById('options');
+  opts.innerHTML='';
+  ['A','B','C','D'].forEach((L,i)=>{
+    const d=document.createElement('div');
+    d.className='opt'+(answers[cur]===i?' selected':'');
+    d.innerHTML='<span class="opt-letter">'+L+'</span><span class="opt-text">'+q.options[i]+'</span>';
+    d.onclick=()=>{answers[cur]=i;render();};
+    opts.appendChild(d);
+  });
+  renderNav();renderStats();
+}
+
+function renderNav(){
+  const g=document.getElementById('nav-grid');
+  g.innerHTML='';
+  questions.forEach((_,i)=>{
+    const b=document.createElement('button');
+    b.className='nav-btn '+(answers[i]!==null?'answered':'unanswered')+(i===cur?' current':'');
+    b.textContent=i+1;
+    b.onclick=()=>{cur=i;render();};
+    g.appendChild(b);
+  });
+}
+
+function renderStats(){
+  const done=answers.filter(a=>a!==null).length;
+  const pct=Math.round(done/questions.length*100);
+  document.getElementById('prog-text').textContent=done+' terjawab';
+  document.getElementById('prog-pct').textContent=pct+'%';
+  document.getElementById('prog-bar').style.width=pct+'%';
+  document.getElementById('stat-ans').textContent=done;
+  document.getElementById('stat-skip').textContent=questions.length-done;
+}
+
+function nextQ(){if(cur<questions.length-1){cur++;render();}}
+function prevQ(){if(cur>0){cur--;render();}}
+
+function submitTest(){
+  clearInterval(timer);
+  let benar=0,salah=0,skip=0;
+  questions.forEach((q,i)=>{
+    if(answers[i]===null)skip++;
+    else if(answers[i]===q.answer)benar++;
+    else salah++;
+  });
+  const nilai=Math.round(benar/questions.length*100);
+  document.getElementById('res-score').textContent=nilai;
+  document.getElementById('res-benar').textContent=benar;
+  document.getElementById('res-salah').textContent=salah;
+  document.getElementById('res-skip').textContent=skip;
+
+  const L=['A','B','C','D'];
+  const rl=document.getElementById('review-list');
+  rl.innerHTML='';
+  questions.forEach((q,i)=>{
+    const ua=answers[i];
+    const cls=ua===null?'skip':ua===q.answer?'correct':'wrong';
+    const div=document.createElement('div');
+    div.className='review-item '+cls;
+    let ansHtml='';
+    if(ua===null){
+      ansHtml='<div class="ri-ans ri-skip-ans">Tidak dijawab</div>';
+    }else if(ua===q.answer){
+      ansHtml='<div class="ri-ans ri-correct-ans">Jawaban Anda: '+L[ua]+'. '+q.options[ua]+' (Benar)</div>';
+    }else{
+      ansHtml='<div class="ri-ans ri-wrong-ans">Jawaban Anda: '+L[ua]+'. '+q.options[ua]+' (Salah)</div>'
+        +'<div class="ri-ans ri-correct-ans">Jawaban benar: '+L[q.answer]+'. '+q.options[q.answer]+'</div>';
+    }
+    div.innerHTML='<div class="ri-q">Soal '+(i+1)+': '+q.text+'</div>'+ansHtml
+      +'<div class="ri-pembahasan">Pembahasan: '+q.pembahasan+'</div>';
+    rl.appendChild(div);
+  });
+
+  document.getElementById('cbt-app').style.display='none';
+  document.getElementById('result-screen').style.display='block';
+}
+
+function resetTest(){
+  answers=new Array(questions.length).fill(null);
+  cur=0;timeLeft=60*60;
+  document.getElementById('timer').textContent='60:00';
+  document.getElementById('timer-box').classList.remove('danger');
+  document.getElementById('cbt-app').style.display='block';
+  document.getElementById('result-screen').style.display='none';
+  render();startTimer();
+}
+
+render();startTimer();
+</script>
